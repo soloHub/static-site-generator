@@ -14,7 +14,7 @@ def main() -> None:
     dir_path_static = "./static"
     content_dir = os.path.join(basepath, "content")
     #public_dir = os.path.join(basepath, "public")
-    public_dir = os.path.join(basepath, "doc")
+    public_dir = os.path.join(basepath, "docs")
 
     print("Deleting public directory...")
     if os.path.exists(public_dir):
