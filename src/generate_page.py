@@ -17,10 +17,7 @@ def extract_title(markdown: str) -> str:
         raise Exception("No Title '# Title'")
     return title
 
-def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
-    basepath = "/"
-    if not from_path.split('/')[0]:
-        basepath = from_path.split('/')[0]
+def generate_page(from_path: str, template_path: str, dest_path: str, basepath: str) -> None:
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, 'r', encoding='utf-8') as md_file:
         # Read everything into a single string variable
@@ -49,14 +46,14 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     with open(dest_path, 'w', encoding='utf-8') as web_file:
         web_file.write(template_content_edited)
 
-def generate_pages_recursive(dir_path_content: str, template_path: str, dest_dir_path:str) -> None:
+def generate_pages_recursive(dir_path_content: str, template_path: str, dest_dir_path:str, basepath: str) -> None:
     for filename in os.listdir(dir_path_content):
         dir_file = os.path.join(dir_path_content, filename)
 
         if os.path.isfile(dir_file):
             filename_ext_htm = filename.replace('.md', '.html')
             dest_file = os.path.join(dest_dir_path, filename_ext_htm)
-            generate_page(dir_file, template_path, dest_file)
+            generate_page(dir_file, template_path, dest_file, basepath)
         else:
             dest_file = os.path.join(dest_dir_path, filename)
-            generate_pages_recursive(dir_file, template_path, dest_file)
+            generate_pages_recursive(dir_file, template_path, dest_file, basepath)
