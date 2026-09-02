@@ -18,19 +18,30 @@ def extract_title(markdown: str) -> str:
     return title
 
 def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
+    basepath = "/"
+    if not from_path.split('/')[0]:
+        basepath = from_path.split('/')[0]
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, 'r', encoding='utf-8') as md_file:
         # Read everything into a single string variable
         markdown_content = md_file.read()
+    md_file.close()
     
     with open(template_path, 'r', encoding='utf-8') as tp_file:
         template_content = tp_file.read()
+    tp_file.close()
     
     html_str = markdown_to_html_node(markdown_content).to_html()
     title = extract_title(markdown_content)
     
-    template_content_edited = re.sub(r'{{ Title }}', title, template_content)
-    template_content_edited = re.sub(r'{{ Content }}', html_str, template_content_edited)
+    template_content_edited = template_content.replace("{{ Title }}", title)
+    template_content_edited = template_content_edited.replace("{{ Content }}", html_str)
+
+    template_content_edited = template_content_edited.replace('href="/', f'href="{basepath}')
+    template_content_edited = template_content_edited.replace('src="/', f'src="{basepath}')
+    #template_content_edited = re.sub(r'{{ Title }}', title, template_content)
+    #template_content_edited = re.sub(r'{{ Content }}', html_str, template_content_edited)
+
 
     dest_dir = os.path.dirname(dest_path)
     if not os.path.exists(dest_dir):
